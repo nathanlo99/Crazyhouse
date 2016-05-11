@@ -6,15 +6,14 @@ const int KnDir[8] = { -8, -21, 8, 21, 19, -19, 12, -12 };
 const int KiDir[8] = { -1, -10, 1, 10, -9, -11, 11, 9 };
 
 // Returns true if the given square is attacked by any piece of the given side.
-inline bool sqAttacked(const unsigned int sq, const unsigned int side, const S_BOARD *pos) {
-  unsigned int piece, t_sq;
+inline bool sqAttacked(const unsigned sq, const unsigned side, const S_BOARD *pos) {
+  unsigned piece, t_sq;
 
-  const unsigned int king = wK + side * 6;
-  const unsigned int knight = wN + side * 6;
+  const unsigned king = wK + side * 6;
+  const unsigned knight = wN + side * 6;
 
   for (int i = 0; i < 8; i++) {
-    if (pos->pieces[sq + KiDir[i]] == king
-      || pos->pieces[sq + KnDir[i]] == knight) {
+    if (pos->pieces[sq + KiDir[i]] == king || pos->pieces[sq + KnDir[i]] == knight) {
       return true;
     }
   }
@@ -27,7 +26,7 @@ inline bool sqAttacked(const unsigned int sq, const unsigned int side, const S_B
     return true;
   }
 
-  for (unsigned int i = 0; i < 4; i++) {
+  for (unsigned i = 0; i < 4; i++) {
     t_sq = sq + RkDir[i];
     while (squareOnBoard(t_sq)) {
       piece = pos->pieces[t_sq];

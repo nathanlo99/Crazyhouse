@@ -3,8 +3,8 @@
 inline U64 generatePosKey(const S_BOARD *pos) {
   U64 finalKey = 0ULL;
 
-  for (unsigned int piece = wP; piece <= bK; piece++) {
-    for (unsigned int i = 0, n = pos->pieceNum[piece]; i < n; i++)
+  for (unsigned piece = wP; piece <= bK; piece++) {
+    for (unsigned i = 0, n = pos->pieceNum[piece]; i < n; i++)
       finalKey ^= pieceKeys[piece][pos->pieceList[piece][i]];
    	finalKey ^= dropKeys[piece][pos->dropNum[piece]];
   }
@@ -17,8 +17,8 @@ inline U64 generatePosKey(const S_BOARD *pos) {
 
 // Update the piece lists in a given position.
 static inline void updateListsMaterial(S_BOARD *pos) {
-  for (unsigned int i = 0; i < 64; i++) {
-    const unsigned int piece = pos->pieces[SQ120[i]];
+  for (unsigned i = 0; i < 64; i++) {
+    const unsigned piece = pos->pieces[SQ120[i]];
     if (piece == EMPTY) continue;
     int colour = pieceCol[piece];
 
@@ -42,14 +42,14 @@ static inline void updateListsMaterial(S_BOARD *pos) {
 // Resets the board.
 inline void resetBoard(S_BOARD *pos) {
   memset(pos->pieces, OFFBOARD, sizeof(pos->pieces));
-  for (unsigned int i = 0; i < 64; i++) pos->pieces[SQ120[i]] = EMPTY;
+  for (unsigned i = 0; i < 64; i++) pos->pieces[SQ120[i]] = EMPTY;
   pos->bigPiece[WHITE] = pos->bigPiece[BLACK] = 0;
   pos->majPiece[WHITE] = pos->majPiece[BLACK] = 0;
   pos->minPiece[WHITE] = pos->minPiece[BLACK] = 0;
   pos->material[WHITE] = pos->material[BLACK] = 0;
   pos->pawns[WHITE] = pos->pawns[BLACK] = pos->pawns[BOTH] = 0ULL;
-  for (unsigned int i = EMPTY; i <= bK; i++) pos->pieceNum[i] = 0;
-  for (unsigned int i = EMPTY; i <= bK; i++) pos->dropNum[i] = 0;
+  for (unsigned i = EMPTY; i <= bK; i++) pos->pieceNum[i] = 0;
+  for (unsigned i = EMPTY; i <= bK; i++) pos->dropNum[i] = 0;
   pos->side = BOTH;
   pos->enPas = NO_SQ;
   pos->fiftyMove = 0;
@@ -64,8 +64,8 @@ inline bool parseFEN(char *fen, S_BOARD *pos) {
 
   int rank = RANK_8;
   int file = FILE_A;
-  unsigned int count = 0;
-  unsigned int piece = EMPTY;
+  unsigned count = 0;
+  unsigned piece = EMPTY;
 
   resetBoard(pos);
 
@@ -109,7 +109,7 @@ inline bool parseFEN(char *fen, S_BOARD *pos) {
         return false;
     }
 
-    for (unsigned int i = 0; i < count; i++) {
+    for (unsigned i = 0; i < count; i++) {
       pos->pieces[FR2SQ(file, rank)] = piece;
       file++;
     }
@@ -119,7 +119,7 @@ inline bool parseFEN(char *fen, S_BOARD *pos) {
   pos->side = *fen == 'w' ? WHITE : BLACK;
   fen += 2;
 
-  for (unsigned int i = 0; i < 4; i++) {
+  for (unsigned i = 0; i < 4; i++) {
     if (*fen == ' ') break;
     switch(*fen) {
       case 'K': pos->castlePerm |= WKCA; break;
@@ -143,21 +143,21 @@ inline bool parseFEN(char *fen, S_BOARD *pos) {
 #ifdef DEBUG
 
 inline bool checkBoard(const S_BOARD *pos) {
-  unsigned int t_pieceNum[13] = { 0 };
-  unsigned int t_bigPiece[2] = { 0 };
-  unsigned int t_majPce[2] = { 0 };
-  unsigned int t_minPce[2] = { 0 };
-  unsigned int t_material[2] = { 0 };
+  unsigned t_pieceNum[13] = { 0 };
+  unsigned t_bigPiece[2] = { 0 };
+  unsigned t_majPce[2] = { 0 };
+  unsigned t_minPce[2] = { 0 };
+  unsigned t_material[2] = { 0 };
 
   U64 t_pawns[3] = { pos->pawns[WHITE], pos->pawns[BLACK], pos->pawns[BOTH] };
 
-  for (unsigned int i = wP; i <= bK; ++i)
-    for (unsigned int j = 0, n = pos->pieceNum[i]; j < n; ++j)
+  for (unsigned i = wP; i <= bK; ++i)
+    for (unsigned j = 0, n = pos->pieceNum[i]; j < n; ++j)
       ASSERT(pos->pieces[pos->pieceList[i][j]] == i);
 
-  for (unsigned int sq64 = 0; sq64 < 64; ++sq64) {
-    const unsigned int p = pos->pieces[SQ120[sq64]];
-    const unsigned int colour = pieceCol[p];
+  for (unsigned sq64 = 0; sq64 < 64; ++sq64) {
+    const unsigned p = pos->pieces[SQ120[sq64]];
+    const unsigned colour = pieceCol[p];
     t_pieceNum[pos->pieces[SQ120[sq64]]]++;
     if (pieceBig[p]) t_bigPiece[colour]++;
     if (pieceMin[p]) t_minPce[colour]++;
@@ -165,7 +165,7 @@ inline bool checkBoard(const S_BOARD *pos) {
     t_material[colour] += pieceVal[p];
   }
 
-  for (unsigned int i = wP; i <= bK; ++i) {
+  for (unsigned i = wP; i <= bK; ++i) {
     ASSERT(t_pieceNum[i] == pos->pieceNum[i]);
   }
 

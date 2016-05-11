@@ -102,38 +102,38 @@ enum { A1 = 21, B1, C1, D1, E1, F1, G1, H1,
 enum { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
 
 typedef struct {
-  unsigned int move;
-  unsigned int score;
+  unsigned move;
+  unsigned score;
 } S_MOVE;
 
 typedef struct {
-  unsigned int move;
-  unsigned int castlePerm;
-  unsigned int enPas;
-  unsigned int fiftyMove;
+  unsigned move;
+  unsigned castlePerm;
+  unsigned enPas;
+  unsigned fiftyMove;
   U64 posKey;
 } S_UNDO;
 
 typedef struct {
-  unsigned int pieces[120];          // pieces on board
+  unsigned pieces[120];          // pieces on board
   bool promoted[120];                // whether or not the pieces were promoted:
                                      // needed to decide whether to pocket a pawn 
   U64 pawns[3];                      // bitboards
-  unsigned int side;                 // side to move
-  unsigned int enPas;                // en passant square
-  unsigned int fiftyMove;            // fifty move counter in half moves
-  unsigned int castlePerm;           // castling permission
-  unsigned int ply;                  // depth of search
-  unsigned int hisPly;               // half moves played thus far
+  unsigned side;                 // side to move
+  unsigned enPas;                // en passant square
+  unsigned fiftyMove;            // fifty move counter in half moves
+  unsigned castlePerm;           // castling permission
+  unsigned ply;                  // depth of search
+  unsigned hisPly;               // half moves played thus far
   U64 posKey;                        // 64-bit position key
-  unsigned int pieceNum[13];         // number of pieces on the board
-  unsigned int dropNum[13];          // number of captured pieces
-  unsigned int bigPiece[2];          // number of big pieces
-  unsigned int majPiece[2];          // number of major pieces
-  unsigned int minPiece[2];          // number of minor pieces
-  unsigned int material[2];          // material, in centi-pawns
+  unsigned pieceNum[13];         // number of pieces on the board
+  unsigned dropNum[13];          // number of captured pieces
+  unsigned bigPiece[2];          // number of big pieces
+  unsigned majPiece[2];          // number of major pieces
+  unsigned minPiece[2];          // number of minor pieces
+  unsigned material[2];          // material, in centi-pawns
   S_UNDO* history[MAX_GAME_MOVES];   // game history
-  unsigned int pieceList[13][16];    // piece list (extreme case is 16 pawns)
+  unsigned pieceList[13][16];    // piece list (extreme case is 16 pawns)
 
 } S_BOARD;
 
@@ -144,8 +144,8 @@ typedef struct {
 // bitboard.
 #ifdef DEBUG
 #ifndef POP
-static inline unsigned int popBit(U64 *bb) {
-  const unsigned int t = __builtin_ctzll(*bb);
+static inline unsigned popBit(U64 *bb) {
+  const unsigned t = __builtin_ctzll(*bb);
   *bb &= *bb - 1;
   return t;
 }
@@ -188,11 +188,11 @@ static inline unsigned int popBit(U64 *bb) {
 /* GLOBALS */
 // The integer from 0 - 63 corresponding to the index of the 64-based board
 // given the index on the 120-based board.
-extern unsigned int SQ64[120];
+extern unsigned SQ64[120];
 
 // The integer from 0 - 119 corresponding to the index of the 120-based board
 // given the index on the 64-based board.
-extern unsigned int SQ120[64];
+extern unsigned SQ120[64];
 
 // The 64-bit integers with which you 'OR' your bitboard in order to set and
 // clear a given bit.
@@ -203,12 +203,12 @@ extern U64 setMask[64], clearMask[64];
 extern U64 pieceKeys[13][120], sideKey, castleKeys[16], dropKeys[13][8];
 
 // Look-up tables for the files and ranks of a given square.
-extern unsigned int fileBoard[120], rankBoard[120];
+extern unsigned fileBoard[120], rankBoard[120];
 
 // Look-up tables for pieces.
-extern unsigned int pieceBig[13], pieceMaj[13], pieceMin[13];
-extern unsigned int pieceVal[13], pieceCol[13];
-extern unsigned int pieceRookQueen[13], pieceBishopQueen[13];
+extern unsigned pieceBig[13], pieceMaj[13], pieceMin[13];
+extern unsigned pieceVal[13], pieceCol[13];
+extern unsigned pieceRookQueen[13], pieceBishopQueen[13];
 
 /* FUNCTIONS */
 
@@ -222,8 +222,8 @@ extern bool checkBoard(const S_BOARD *pos);
 extern void init(void);
 
 // io.c
-extern const char* printSquare(const unsigned int sq);
-extern const char* printMove(const unsigned int move);
+extern const char* printSquare(const unsigned sq);
+extern const char* printMove(const unsigned move);
 extern void printBoard(const S_BOARD *pos);
 
 // util.c
