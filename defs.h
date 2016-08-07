@@ -4,20 +4,20 @@
 // So the compiler can help us inline.
 // #define inline __attribute__((gnu_inline)) inline
 
-#include <stdio.h>   // for printf.
-#include <stdlib.h>  // for exit.
 #include <stdbool.h> // for true and false constants.
 #include <stdint.h>  // for uint64_t.
+#include <stdio.h>   // for printf.
+#include <stdlib.h>  // for exit.
 #include <string.h>  // for memset.
 #include <time.h>    // for time.
 
 typedef uint64_t U64;
 
 #ifdef DEBUG
-#define ASSERT(n)\
-  if (!(n)) { \
-    printf("[ERROR] ASSERT(%s) failed at %s : %d\n", #n, __FILE__, __LINE__); \
-    exit(1); \
+#define ASSERT(n)                                                              \
+  if (!(n)) {                                                                  \
+    printf("[ERROR] ASSERT(%s) failed at %s : %d\n", #n, __FILE__, __LINE__);  \
+    exit(1);                                                                   \
   }
 #else
 #define ASSERT(n)
@@ -94,8 +94,26 @@ enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 };
 enum { WHITE, BLACK, BOTH };
 
 // Defines the indices for important squares on the board.
-enum { A1 = 21, B1, C1, D1, E1, F1, G1, H1,
-       A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ, OFFBOARD };
+enum {
+  A1 = 21,
+  B1,
+  C1,
+  D1,
+  E1,
+  F1,
+  G1,
+  H1,
+  A8 = 91,
+  B8,
+  C8,
+  D8,
+  E8,
+  F8,
+  G8,
+  H8,
+  NO_SQ,
+  OFFBOARD
+};
 
 // Defines the bit-values of the castling permissions. To toggle a castling
 // permission, XOR the current castling permission with the given castling bit.
@@ -115,69 +133,56 @@ typedef struct {
 } S_UNDO;
 
 typedef struct {
-  unsigned pieces[120];          // pieces on board
-  bool promoted[120];                // whether or not the pieces were promoted:
-                                     // needed to decide whether to pocket a pawn 
-  U64 pawns[3];                      // bitboards
-  unsigned side;                 // side to move
-  unsigned enPas;                // en passant square
-  unsigned fiftyMove;            // fifty move counter in half moves
-  unsigned castlePerm;           // castling permission
-  unsigned ply;                  // depth of search
-  unsigned hisPly;               // half moves played thus far
-  U64 posKey;                        // 64-bit position key
-  unsigned pieceNum[13];         // number of pieces on the board
-  unsigned dropNum[13];          // number of captured pieces
-  unsigned bigPiece[2];          // number of big pieces
-  unsigned majPiece[2];          // number of major pieces
-  unsigned minPiece[2];          // number of minor pieces
-  unsigned material[2];          // material, in centi-pawns
-  S_UNDO* history[MAX_GAME_MOVES];   // game history
-  unsigned pieceList[13][16];    // piece list (extreme case is 16 pawns)
+  unsigned pieces[120];            // pieces on board
+  bool promoted[120];              // whether or not the pieces were promoted:
+                                   // needed to decide whether to pocket a pawn
+  U64 pawns[3];                    // bitboards
+  unsigned side;                   // side to move
+  unsigned enPas;                  // en passant square
+  unsigned fiftyMove;              // fifty move counter in half moves
+  unsigned castlePerm;             // castling permission
+  unsigned ply;                    // depth of search
+  unsigned hisPly;                 // half moves played thus far
+  U64 posKey;                      // 64-bit position key
+  unsigned pieceNum[13];           // number of pieces on the board
+  unsigned dropNum[13];            // number of captured pieces
+  unsigned bigPiece[2];            // number of big pieces
+  unsigned majPiece[2];            // number of major pieces
+  unsigned minPiece[2];            // number of minor pieces
+  unsigned material[2];            // material, in centi-pawns
+  S_UNDO *history[MAX_GAME_MOVES]; // game history
+  unsigned pieceList[13][16];      // piece list (extreme case is 16 pawns)
 
 } S_BOARD;
 
 /* MACROS */
-#define FR2SQ(f, r) (21 + (f) + (r) * 10)
-
-// Short-hand for popping bit or counting the number of bits in a
-// bitboard.
-#ifdef DEBUG
-#ifndef POP
-static inline unsigned popBit(U64 *bb) {
-  const unsigned t = __builtin_ctzll(*bb);
-  *bb &= *bb - 1;
-  return t;
-}
-#define POP(b) popBit(b)
-#define CNT(b) __builtin_popcountll(b)
-#endif
-#endif
+#define FR2SQ(f, r) (21 + (f) + (r)*10)
 
 // Short-hands for clearing and setting a bit in a bitboard.
 #define CLRBIT(bb, sq) ((bb) &= clearMask[(sq)])
 #define SETBIT(bb, sq) ((bb) |= setMask[(sq)])
 
-#define squareOnBoard(sq)       (fileBoard[(sq)] != OFFBOARD)
-#define squareOffBoard(sq)      (fileBoard[(sq)] == OFFBOARD)
-#define sideValid(side)         ((side) == WHITE || (side) == BLACK)
-#define pieceValid(piece)       ((piece) >= wP && (piece) <= bK)
-#define pieceValidEmpty(piece)  ((piece) <= bK)
+#define squareOnBoard(sq) (fileBoard[(sq)] != OFFBOARD)
+#define squareOffBoard(sq) (fileBoard[(sq)] == OFFBOARD)
+#define sideValid(side) ((side) == WHITE || (side) == BLACK)
+#define pieceValid(piece) ((piece) >= wP && (piece) <= bK)
+#define pieceValidEmpty(piece) ((piece) <= bK)
 
 // Macros for breaking the move format into its constituent parts.
-#define FROMSQ(m)   (((m)      ) & 0x7F)
-#define TOSQ(m)     (((m) >> 07) & 0x7F)
+#define FROMSQ(m) (((m)) & 0x7F)
+#define TOSQ(m) (((m) >> 07) & 0x7F)
 #define CAPTURED(m) (((m) >> 14) & 0xF)
 #define PROMOTED(m) (((m) >> 20) & 0xF)
 #define DROPPED(m) (((m) >> 20) & 0xF)
 
 // Constants for checking flags in a move in the above move format.
-#define MFLAGEP   0x40000
-#define MFLAGPS   0x80000
-#define MFLAGCA   0x1000000
-#define MFLAGCAP  0x7C000
-#define MFLAGPROM 0xF00000
-#define MFLAGDROP 0x2000000
+#define MFLAGEP 0x00040000
+#define MFLAGCAP 0x0007C000
+#define MFLAGPS 0x00080000
+#define MFLAGPROM 0x00F00000
+#define MFLAGCA 0x01000000
+#define MFLAGDROP 0x02000000
+
 // Short-hands for checking pieces
 #define IsBQ(p) (pieceBishopQueen[(p)])
 #define IsRQ(p) (pieceRookQueen[(p)])
@@ -222,8 +227,8 @@ extern bool checkBoard(const S_BOARD *pos);
 extern void init(void);
 
 // io.c
-extern const char* printSquare(const unsigned sq);
-extern const char* printMove(const unsigned move);
+extern const char *printSquare(const unsigned sq);
+extern const char *printMove(const unsigned move);
 extern void printBoard(const S_BOARD *pos);
 
 // util.c
