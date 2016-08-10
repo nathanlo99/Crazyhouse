@@ -33,6 +33,21 @@ inline const char *printMove(const unsigned move) {
   return result;
 }
 
+inline void printMoveList(const S_MOVELIST *list) {
+  int score;
+  unsigned move;
+  printf("\n============================ MOVE LIST "
+         "=============================\n");
+  printf(" LIST HAS %d MOVES:\n", list->count);
+  for (unsigned i = 0; i < list->count; i++) {
+    move = list->moves[i].move;
+    score = list->moves[i].score;
+    printf("MOVE %3d: %5s (SCORE: %d)\n", i + 1, printMove(move), score);
+  }
+  printf("\n========================== END MOVE LIST "
+         "===========================\n");
+}
+
 // Prints a formatted version of the game board into the console window.
 inline void printBoard(const S_BOARD *pos) {
   static const char *temp = "   +---+---+---+---+---+---+---+---+";

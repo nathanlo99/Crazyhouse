@@ -1,9 +1,6 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-// So the compiler can help us inline.
-// #define inline __attribute__((gnu_inline)) inline
-
 #include <stdbool.h> // for true and false constants.
 #include <stdint.h>  // for uint64_t.
 #include <stdio.h>   // for printf.
@@ -125,6 +122,11 @@ typedef struct {
 } S_MOVE;
 
 typedef struct {
+  S_MOVE moves[MAX_POSITION_MOVES];
+  unsigned count;
+} S_MOVELIST;
+
+typedef struct {
   unsigned move;
   unsigned castlePerm;
   unsigned enPas;
@@ -211,11 +213,15 @@ extern U64 pieceKeys[13][120], sideKey, castleKeys[16], dropKeys[13][8];
 extern unsigned fileBoard[120], rankBoard[120];
 
 // Look-up tables for pieces.
-extern unsigned pieceBig[13], pieceMaj[13], pieceMin[13];
+extern bool pieceBig[13], pieceMaj[13], pieceMin[13];
 extern unsigned pieceVal[13], pieceCol[13];
-extern unsigned pieceRookQueen[13], pieceBishopQueen[13];
+extern bool pieceRookQueen[13], pieceBishopQueen[13], pieceSlides[13];
 
 /* FUNCTIONS */
+
+// attack.c
+extern bool squareAttacked(const unsigned sq, const unsigned side,
+                           const S_BOARD *pos);
 
 // board.c
 extern bool parseFEN(char *fen, S_BOARD *pos);
@@ -230,6 +236,10 @@ extern void init(void);
 extern const char *printSquare(const unsigned sq);
 extern const char *printMove(const unsigned move);
 extern void printBoard(const S_BOARD *pos);
+extern void printMoveList(const S_MOVELIST *list);
+
+// movegen.c
+extern void generateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
 
 // util.c
 extern int getTimeMs(void);

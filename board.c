@@ -74,7 +74,7 @@ bool parseFEN(char *fen, S_BOARD *pos) {
 
   resetBoard(pos);
 
-  while ((rank >= RANK_1) && *fen) {
+  while (rank >= RANK_1 && *fen) {
     count = 1;
     switch (*fen) {
     case 'p':
@@ -182,7 +182,6 @@ bool parseFEN(char *fen, S_BOARD *pos) {
 
 #ifdef DEBUG
 #define CNT(b) ((unsigned)__builtin_popcountll(b))
-
 unsigned POP(U64 *bb) {
   const unsigned t = __builtin_ctzll(*bb);
   *bb &= *bb - 1;
