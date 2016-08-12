@@ -93,8 +93,7 @@ inline void printBoard(const S_BOARD *pos) {
 
   ASSERT(sideValid(pos->side));
   if (pos->hisPly > 0) {
-    const unsigned lastMove = pos->history[pos->hisPly - 1]->move;
-    printf("  LAST MOVE: %s\n", printMove(lastMove));
+    printf("  LAST MOVE: %s\n", printMove(pos->history[pos->hisPly - 1]->move));
   } else {
     printf("  LAST MOVE: NONE\n");
   }

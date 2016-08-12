@@ -36,12 +36,11 @@ void updateListsMaterial(S_BOARD *pos) {
 
     if (piece == wP) {
       SETBIT(pos->pawns[WHITE], i);
-      SETBIT(pos->pawns[BOTH], i);
     } else if (piece == bP) {
       SETBIT(pos->pawns[BLACK], i);
-      SETBIT(pos->pawns[BOTH], i);
     }
   }
+  pos->pawns[BOTH] = pos->pawns[WHITE] | pos->pawns[BLACK];
 }
 
 // Resets the board.
@@ -251,6 +250,7 @@ bool checkBoard(const S_BOARD *pos) {
          (rankBoard[pos->enPas] == RANK_6 && pos->side == WHITE) ||
          (rankBoard[pos->enPas] == RANK_3 && pos->side == BLACK));
 
+  printf(" ################ CHECKBOARD PASSED ################\n");
   return true;
 }
 

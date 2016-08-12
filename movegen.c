@@ -5,46 +5,33 @@
   ((from) | ((to) << 7) | ((captured) << 14) | ((promoted) << 20) | (flag))
 #define DROP(piece, to) (((to) << 7) | ((piece) << 20) | MFLAGDROP)
 
-const int directions[13][8] = {
-    {0},                                // EMPTY
-    {0},                                // P
-    {-8, -19, -21, -12, 8, 19, 21, 12}, // N
-    {-9, -11, 11, 9},                   // B
-    {-1, -10, 1, 10},                   // R
-    {-9, -11, 11, 9, -1, -10, 1, 10},   // Q
-    {-9, -11, 11, 9, -1, -10, 1, 10},   // K
-    {0},                                // P
-    {-8, -19, -21, -12, 8, 19, 21, 12}, // N
-    {-9, -11, 11, 9},                   // B
-    {-1, -10, 1, 10},                   // R
-    {-9, -11, 11, 9, -1, -10, 1, 10},   // Q
-    {-9, -11, 11, 9, -1, -10, 1, 10},   // K
-};
-
-const int numDirections[13] = {0, 0, 8, 4, 4, 8, 8, 0, 8, 4, 4, 8, 8};
-
-void addQuietMove(const S_BOARD *pos, unsigned move, S_MOVELIST *list) {
+static inline void addQuietMove(const S_BOARD *pos, unsigned move,
+                                S_MOVELIST *list) {
   ASSERT(CAPTURED(move) == EMPTY);
   list->moves[list->count++] = (S_MOVE){move, 0};
 }
 
-void addCaptureMove(const S_BOARD *pos, unsigned move, S_MOVELIST *list) {
+static inline void addCaptureMove(const S_BOARD *pos, unsigned move,
+                                  S_MOVELIST *list) {
   ASSERT(CAPTURED(move) != EMPTY);
   list->moves[list->count++] = (S_MOVE){move, 0};
 }
 
-void addEnPassantMove(const S_BOARD *pos, unsigned move, S_MOVELIST *list) {
+static inline void addEnPassantMove(const S_BOARD *pos, unsigned move,
+                                    S_MOVELIST *list) {
   ASSERT(move & MFLAGEP);
   list->moves[list->count++] = (S_MOVE){move, 0};
 }
 
-void addDropMove(const S_BOARD *pos, unsigned move, S_MOVELIST *list) {
+static inline void addDropMove(const S_BOARD *pos, unsigned move,
+                               S_MOVELIST *list) {
   ASSERT(move & MFLAGDROP);
   list->moves[list->count++] = (S_MOVE){move, 0};
 }
 
-void addWhitePawnCaptureMove(const S_BOARD *pos, const int from, const int to,
-                             const int captured, S_MOVELIST *list) {
+static inline void addWhitePawnCaptureMove(const S_BOARD *pos, const int from,
+                                           const int to, const int captured,
+                                           S_MOVELIST *list) {
   ASSERT(pieceValid(captured));
   ASSERT(squareOnBoard(from));
   ASSERT(squareOnBoard(to));
@@ -59,8 +46,8 @@ void addWhitePawnCaptureMove(const S_BOARD *pos, const int from, const int to,
   }
 }
 
-void addWhitePawnMove(const S_BOARD *pos, const int from, const int to,
-                      S_MOVELIST *list) {
+static inline void addWhitePawnMove(const S_BOARD *pos, const int from,
+                                    const int to, S_MOVELIST *list) {
   ASSERT(squareOnBoard(from));
   ASSERT(squareOnBoard(to));
   ASSERT(pos->side == WHITE);
@@ -74,8 +61,9 @@ void addWhitePawnMove(const S_BOARD *pos, const int from, const int to,
   }
 }
 
-void addBlackPawnCaptureMove(const S_BOARD *pos, const int from, const int to,
-                             const int captured, S_MOVELIST *list) {
+static inline void addBlackPawnCaptureMove(const S_BOARD *pos, const int from,
+                                           const int to, const int captured,
+                                           S_MOVELIST *list) {
   ASSERT(pieceValid(captured));
   ASSERT(squareOnBoard(from));
   ASSERT(squareOnBoard(to));
@@ -90,8 +78,8 @@ void addBlackPawnCaptureMove(const S_BOARD *pos, const int from, const int to,
   }
 }
 
-void addBlackPawnMove(const S_BOARD *pos, const int from, const int to,
-                      S_MOVELIST *list) {
+static inline void addBlackPawnMove(const S_BOARD *pos, const int from,
+                                    const int to, S_MOVELIST *list) {
   ASSERT(squareOnBoard(from));
   ASSERT(squareOnBoard(to));
   ASSERT(pos->side == BLACK);
@@ -106,6 +94,23 @@ void addBlackPawnMove(const S_BOARD *pos, const int from, const int to,
 }
 
 void generateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
+  static const int directions[13][8] = {
+      {0},                                // EMPTY
+      {0},                                // P
+      {-8, -19, -21, -12, 8, 19, 21, 12}, // N
+      {-9, -11, 11, 9},                   // B
+      {-1, -10, 1, 10},                   // R
+      {-9, -11, 11, 9, -1, -10, 1, 10},   // Q
+      {-9, -11, 11, 9, -1, -10, 1, 10},   // K
+      {0},                                // P
+      {-8, -19, -21, -12, 8, 19, 21, 12}, // N
+      {-9, -11, 11, 9},                   // B
+      {-1, -10, 1, 10},                   // R
+      {-9, -11, 11, 9, -1, -10, 1, 10},   // Q
+      {-9, -11, 11, 9, -1, -10, 1, 10},   // K
+  };
+
+  static const int numDirections[13] = {0, 0, 8, 4, 4, 8, 8, 0, 8, 4, 4, 8, 8};
   ASSERT(checkBoard(pos));
   list->count = 0;
 

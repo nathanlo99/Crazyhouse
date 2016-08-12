@@ -1,13 +1,14 @@
 #include "defs.h"
 
-const int RkDir[4] = {-1, -10, 1, 10};
-const int BiDir[4] = {-9, -11, 11, 9};
-const int KnDir[8] = {-8, -21, 8, 21, 19, -19, 12, -12};
-const int KiDir[8] = {-1, -10, 1, 10, -9, -11, 11, 9};
-
 // Returns true if the given square is attacked by any piece of the given side.
 inline bool squareAttacked(const unsigned sq, const unsigned side,
                            const S_BOARD *pos) {
+
+  static const int RkDir[4] = {-1, -10, 1, 10};
+  static const int BiDir[4] = {-9, -11, 11, 9};
+  static const int KnDir[8] = {-8, -21, 8, 21, 19, -19, 12, -12};
+  static const int KiDir[8] = {-1, -10, 1, 10, -9, -11, 11, 9};
+
   unsigned piece, t_sq;
 
   const unsigned king = side == WHITE ? wK : bK;   // wK + side * 6;
