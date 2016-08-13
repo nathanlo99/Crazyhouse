@@ -235,6 +235,7 @@ extern void init(void);
 // io.c
 extern const char *printSquare(const unsigned sq);
 extern const char *printMove(const unsigned move);
+extern const char *printFEN(const S_BOARD *pos);
 extern void printBoard(const S_BOARD *pos);
 extern void printMoveList(const S_MOVELIST *list);
 
