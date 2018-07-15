@@ -243,9 +243,10 @@ void generateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
 
             if (pos->pieces[temp_sq] != EMPTY) {
               if (pieceCol[pos->pieces[temp_sq]] == (side ^ 1)) {
-                addCaptureMove(pos, MOVE(sq, temp_sq, pos->pieces[temp_sq],
-                                         EMPTY, MFLAGCAP),
-                               list);
+                addCaptureMove(
+                    pos,
+                    MOVE(sq, temp_sq, pos->pieces[temp_sq], EMPTY, MFLAGCAP),
+                    list);
               }
               break;
             }

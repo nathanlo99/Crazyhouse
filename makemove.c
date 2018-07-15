@@ -3,7 +3,7 @@
 makeMove(move, board):
         Store current state into history array
         Move current piece from 'from' to 'to'
-        If a cpature was made, remove cpatured from the piece list
+        If a capture was made, remove captured from the piece list
         Update fifty move rule
         Promotions
         En passant captures

@@ -44,6 +44,7 @@ MOVE FORMAT:
   The information is stored in the following way, with the 6 most significant
   bits unused:
 
+      28   24   20   16   12    8    4    0 | OFFSET
     0000 0000 0000 0000 0000 0000 0111 1111 | FROM SQUARE
     0000 0000 0000 0000 0011 1111 1000 0000 | TO SQUARE
     0000 0000 0000 0011 1100 0000 0000 0000 | CAPTURED PIECE
@@ -65,7 +66,7 @@ MOVE FORMAT:
 #define MAX_GAME_MOVES 2048
 
 // The maximum number of possible moves in any position.
-#define MAX_POSITION_MOVES 256
+#define MAX_POSITION_MOVES 512
 
 // The deepest the engine will attempt to search to.
 #define MAX_SEARCH_DEPTH 64
